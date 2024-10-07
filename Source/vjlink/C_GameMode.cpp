@@ -13,6 +13,7 @@ AC_GameMode::AC_GameMode()
 	}
 	bSelectMode = false;
 	CacheInventoryItemID = -1;
+	
 }
 void AC_GameMode::PauseGame(bool bIsPaused)
 {
@@ -24,4 +25,14 @@ void AC_GameMode::PauseGame(bool bIsPaused)
 void AC_GameMode::AssignBuffer(FInventoryItem InputItem)
 {
 	BufferItem = InputItem;
+}
+
+void AC_GameMode::RefreshSeed()
+{
+	if (Seed == NULL)
+	{
+		RandomStream.GenerateNewSeed();
+		Seed = RandomStream.GetCurrentSeed();
+
+	}
 }

@@ -25,6 +25,12 @@ public:
 	FInventoryItem BufferItem;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (MultiLine = "true"))
 	FText CacheText;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int Seed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FRandomStream RandomStream;
 	UFUNCTION(BlueprintCallable)
 	void AssignBuffer(FInventoryItem InputItem);
+	UFUNCTION(BlueprintCallable)
+	void RefreshSeed();
 };

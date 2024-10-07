@@ -22,10 +22,10 @@ EBTNodeResult::Type UC_EnemyHumanoidBTTask_Chase::ExecuteTask(UBehaviorTreeCompo
 	const FVector CurrentLocation = Pawn->GetActorLocation();
 	const UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 	AC_PlayerCharacter* TargetPlayer = Cast<AC_PlayerCharacter>(GetWorld()->GetFirstPlayerController());
-	if (IsValid(NavSys) && IsValid(TargetPlayer) && NavSys->ProjectPointToNavigation(TargetPlayer->GetActorLocation(), Location.Location, FNavigationQueryFilter()))
+	/*if (IsValid(NavSys) && IsValid(TargetPlayer) && NavSys->ProjectPointToNavigation(Location.Location, TargetPlayer->GetActorLocation(), FVector::ZeroVector))
 	{
 		AIController->GetBlackboardComponent()->SetValueAsVector(BlackboardKey.SelectedKeyName, Location.Location);
-	}
+	}*/
 	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	return EBTNodeResult::Succeeded;
