@@ -114,6 +114,10 @@ public:
 	void Freeze(UPARAM(ref)bool& bReferenceBoolean, APlayerController* MyController, bool bEnableMouse);
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bPaused;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	AActor* LookAtClass;
+	UFUNCTION(BlueprintCallable)
+	void Punch(float Damage);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

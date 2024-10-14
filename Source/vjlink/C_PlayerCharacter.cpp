@@ -84,6 +84,21 @@ void AC_PlayerCharacter::OnBeginOverlap(UPrimitiveComponent* HitComp, AActor* Ot
 void AC_PlayerCharacter::OnEndOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 }
+void AC_PlayerCharacter::Punch(float Damage)
+{
+	if (bOutOfOrder != true)
+	{
+		if (Health - Damage > 0.0f)
+		{
+			Health -= Damage;
+
+		}
+		else {
+			Health = 0.0f;
+			bOutOfOrder = true;
+		}
+	}
+}
 // Called when the game starts or when spawned
 void AC_PlayerCharacter::BeginPlay()
 {
@@ -288,6 +303,17 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 	else {
 		bIsWatchingAtUseable = false;
 		WatchableItem = nullptr;
+	}
+	FVector EndLook = ((ForwardLine * 844.0f) + StartLine);
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, StartLine, EndLook, ECC_Visibility, CollisionParams))
+	{
+		if (IsValid(OutHit.GetActor()))
+		{
+			LookAtClass = OutHit.GetActor();
+		}
+		else {
+			LookAtClass = nullptr;
+		}
 	}
 
 	if (!bIsFlashlightActive)
