@@ -146,39 +146,51 @@ void AC_PlayerCharacter::Move(const FInputActionValue& Value)
 
 void AC_PlayerCharacter::Use()
 {
-	//Ruling out we accidentally use item while reading
-	if (bIsReading) {
-		
-		Unread();
+	if (bOutOfOrder != true)
+	{
+		//Ruling out we accidentally use item while reading
+		if (bIsReading) {
+
+			Unread();
+
+		}
+		else
+		{
+			if (bIsWatchingAtUseable)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Useable Item: %s"), *WatchableItem->GetName());
+				Cast<AC_UseableItem>(WatchableItem)->UseItem(Cast<AC_GameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CacheInventoryItemID);
+
+			}
+			Cast<AC_GameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CacheInventoryItemID = -1;
+		}
 
 	}
 	else
 	{
-		if (bIsWatchingAtUseable)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Useable Item: %s"), *WatchableItem->GetName());
-			Cast<AC_UseableItem>(WatchableItem)->UseItem(Cast<AC_GameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CacheInventoryItemID);
-
-		}
-		Cast<AC_GameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CacheInventoryItemID = -1;
+		UGameplayStatics::OpenLevel(GetWorld(), GetWorld()->GetFName());
 	}
-
 }
 
-void AC_PlayerCharacter::Flashlight()
-{
-	if(ChargeFlashlight > 0.0f)
+	void AC_PlayerCharacter::Flashlight()
 	{
-		if (bIsFlashlightActive)
+		if(bOutOfOrder != true)
 		{
-			bIsFlashlightActive = false;
+			if (ChargeFlashlight > 0.0f)
+			{
+				if (bIsFlashlightActive)
+				{
+					bIsFlashlightActive = false;
+				}
+				else
+				{
+					bIsFlashlightActive = true;
+				}
+			}
+
 		}
-		else
-		{
-			bIsFlashlightActive = true;
-		}
+
 	}
-}
 
 void AC_PlayerCharacter::Look(const FInputActionValue& Value)
 {
@@ -208,31 +220,36 @@ void AC_PlayerCharacter::Quit()
 
 void AC_PlayerCharacter::Pause()
 {
-	if(!bIsInventoryOpen)
+	if(bOutOfOrder !=true)
 	{
-		if (!bPaused)
+		if (!bIsInventoryOpen)
 		{
-			bPaused = true;
+			if (!bPaused)
+			{
+				bPaused = true;
+			}
+			else
+			{
+				bPaused = false;
+			}
+			GetWorld()->GetAuthGameMode<AC_GameMode>()->PauseGame(bPaused);
 		}
-		else
-		{
-			bPaused = false;
-		}
-		GetWorld()->GetAuthGameMode<AC_GameMode>()->PauseGame(bPaused);
 	}
 }
 
 void AC_PlayerCharacter::OpenInventory()
-{
-	if(!bIsReading)
+{	if(bOutOfOrder !=true)
 	{
-		APlayerController* MyController = GetWorld()->GetFirstPlayerController();
-		Freeze(bIsInventoryOpen, MyController, true);
-	}
-	else
-	{
-		
-		Unread();
+		if (!bIsReading)
+		{
+			APlayerController* MyController = GetWorld()->GetFirstPlayerController();
+			Freeze(bIsInventoryOpen, MyController, true);
+		}
+		else
+		{
+
+			Unread();
+		}
 	}
 }
 void AC_PlayerCharacter::Read(FText TextToRead)
@@ -280,7 +297,6 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FHitResult OutHit;
 	FVector StartLine = MainCamera->GetComponentLocation();
 	FVector ForwardLine = MainCamera->GetForwardVector();
 	FVector End = ((ForwardLine * 244.0f) + StartLine);
@@ -304,6 +320,7 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 		bIsWatchingAtUseable = false;
 		WatchableItem = nullptr;
 	}
+	//Check what actors are we looking at
 	FVector EndLook = ((ForwardLine * 844.0f) + StartLine);
 	if (GetWorld()->LineTraceSingleByChannel(OutHit, StartLine, EndLook, ECC_Visibility, CollisionParams))
 	{
@@ -316,6 +333,7 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 		}
 	}
 
+	//-------------------------------
 	if (!bIsFlashlightActive)
 	{
 		SpotLight->SetIntensity(0.0f);

@@ -99,7 +99,7 @@ public:
 	TArray<FInventoryItem> InventoryArray;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsWatchingAtUseable;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bIsFlashlightActive;
 	bool bOutOfOrder;
 	void Unread();
@@ -118,6 +118,8 @@ public:
 	AActor* LookAtClass;
 	UFUNCTION(BlueprintCallable)
 	void Punch(float Damage);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FHitResult OutHit;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
