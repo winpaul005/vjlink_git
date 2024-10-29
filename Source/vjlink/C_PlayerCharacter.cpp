@@ -99,6 +99,17 @@ void AC_PlayerCharacter::Punch(float Damage)
 		}
 	}
 }
+void AC_PlayerCharacter::Heal(float Health_add)
+{
+	if (Health + Health_add < 100.0f)
+	{
+		Health += Health_add;
+	}
+	else
+	{
+		Health = 100.0f;
+	}
+}
 // Called when the game starts or when spawned
 void AC_PlayerCharacter::BeginPlay()
 {
@@ -137,8 +148,8 @@ void AC_PlayerCharacter::Move(const FInputActionValue& Value)
 			const FVector YDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 			//NOTE: For some reason XDirection and YDirection are f***d up, doing what they're supposed to do vice versa.
 			//Keep that in mind.
-			AddMovementInput(XDirection, MovementVector.Y);
-			AddMovementInput(YDirection, MovementVector.X);
+			AddMovementInput(XDirection, MovementVector.Y * 0.6f);
+			AddMovementInput(YDirection, MovementVector.X*0.6f);
 		}
 	}
 }

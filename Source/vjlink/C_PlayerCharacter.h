@@ -118,6 +118,8 @@ public:
 	AActor* LookAtClass;
 	UFUNCTION(BlueprintCallable)
 	void Punch(float Damage);
+	UFUNCTION(BlueprintCallable)
+	void Heal(float Health_add);
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FHitResult OutHit;
 protected:
