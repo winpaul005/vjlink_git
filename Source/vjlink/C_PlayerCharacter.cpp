@@ -38,6 +38,7 @@ AC_PlayerCharacter::AC_PlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	ChatterboxComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Chatterbox Component"));
 	GetCapsuleComponent()->InitCapsuleSize(42.0f, 85.0f);
 	GetCapsuleComponent()->SetRelativeLocation(FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
 
@@ -150,6 +151,7 @@ void AC_PlayerCharacter::Move(const FInputActionValue& Value)
 			//Keep that in mind.
 			AddMovementInput(XDirection, MovementVector.Y * 0.6f);
 			AddMovementInput(YDirection, MovementVector.X*0.6f);
+
 		}
 	}
 }

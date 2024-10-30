@@ -7,6 +7,9 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SpotLightComponent.h"
 
+#include "Sound/SoundBase.h"
+#include "Components/AudioComponent.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/StaticMeshComponent.h"
@@ -42,6 +45,12 @@ class VJLINK_API AC_PlayerCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AC_PlayerCharacter();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
+	UAudioComponent* ChatterboxComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	USoundBase* FootstepsCue;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* MainCamera;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")

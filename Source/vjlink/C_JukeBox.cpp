@@ -6,9 +6,24 @@
 // Sets default values
 AC_JukeBox::AC_JukeBox()
 {
+	JukeboxComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Jukebox Component"));
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+}
+
+void AC_JukeBox::PlayCue(int cueIndex, bool IsImmediate)
+{
+	if (!JukeboxComponent->IsPlaying() || (IsImmediate && JukeboxCues[cueIndex] != JukeboxComponent->GetSound()))
+	{
+		JukeboxComponent->SetSound(JukeboxCues[cueIndex]);
+		JukeboxComponent->Play();
+	}
+}
+
+void AC_JukeBox::StopAll()
+{
+	JukeboxComponent->Stop();
 }
 
 // Called when the game starts or when spawned
