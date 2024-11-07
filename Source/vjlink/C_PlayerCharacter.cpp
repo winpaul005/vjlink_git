@@ -96,6 +96,7 @@ void AC_PlayerCharacter::Punch(float Damage)
 		}
 		else {
 			Health = 0.0f;
+			OnDeadEvent.Broadcast();
 			bOutOfOrder = true;
 		}
 	}

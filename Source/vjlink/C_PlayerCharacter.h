@@ -18,6 +18,8 @@
 
 #include "Camera/CameraComponent.h"
 #include "C_PlayerCharacter.generated.h"
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDead);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWidgetInitCompleted);
 USTRUCT(BlueprintType)
 struct FInventoryItem : public FTableRowBase
@@ -50,6 +52,8 @@ public:
 	UAudioComponent* ChatterboxComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
 	USoundBase* FootstepsCue;
+	UPROPERTY(BlueprintAssignable, Category = "Custom Events")
+	FOnDead OnDeadEvent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* MainCamera;
