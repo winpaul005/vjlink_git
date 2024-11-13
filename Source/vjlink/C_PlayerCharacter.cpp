@@ -270,6 +270,7 @@ void AC_PlayerCharacter::Read(FText TextToRead)
 {
 	Cast<AC_GameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CacheText = TextToRead;
 	UE_LOG(LogTemp, Warning, TEXT("Read: %s"), *TextToRead.ToString());
+	OnReadEvent.Broadcast();
 	Freeze(bIsReading, GetWorld()->GetFirstPlayerController(),false);
 	bIsReading = true;
 
