@@ -14,7 +14,7 @@ AC_JukeBox::AC_JukeBox()
 
 void AC_JukeBox::PlayCue(int cueIndex, bool IsImmediate)
 {
-	if (!JukeboxComponent->IsPlaying() || (IsImmediate && JukeboxCues[cueIndex] != JukeboxComponent->GetSound()))
+	if ((!JukeboxComponent->IsPlaying() || (IsImmediate && JukeboxCues[cueIndex] != JukeboxComponent->GetSound())) && JukeboxCues[cueIndex] != nullptr)
 	{
 		JukeboxComponent->SetSound(JukeboxCues[cueIndex]);
 		JukeboxComponent->Play();
