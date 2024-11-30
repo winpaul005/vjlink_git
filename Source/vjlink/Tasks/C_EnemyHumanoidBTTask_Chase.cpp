@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include <vjlink/C_PlayerCharacter.h>
 
 UC_EnemyHumanoidBTTask_Chase::UC_EnemyHumanoidBTTask_Chase()
@@ -21,10 +22,10 @@ EBTNodeResult::Type UC_EnemyHumanoidBTTask_Chase::ExecuteTask(UBehaviorTreeCompo
 	const APawn* Pawn = AIController->GetPawn();
 	const FVector CurrentLocation = Pawn->GetActorLocation();
 	const UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
-	AC_PlayerCharacter* TargetPlayer = Cast<AC_PlayerCharacter>(GetWorld()->GetFirstPlayerController());
-	if (IsValid(NavSys) && IsValid(TargetPlayer) && NavSys->FindPathToLocationSynchronously(GetWorld(), CurrentLocation, TargetPlayer->GetActorLocation(), NULL))
+	AActor* TargetPlayer = (UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (IsValid(NavSys) && IsValid(TargetPlayer))
 	{
-		AIController->GetBlackboardComponent()->SetValueAsVector(BlackboardKey.SelectedKeyName, Location.Location);
+		AIController->GetBlackboardComponent()->SetValueAsVector(BlackboardKey.SelectedKeyName, TargetPlayer->GetActorLocation());
 	}
 	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
