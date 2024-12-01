@@ -266,6 +266,30 @@ void AC_PlayerCharacter::OpenInventory()
 		}
 	}
 }
+void AC_PlayerCharacter::Knife()
+{
+	FVector StartLine = MainCamera->GetComponentLocation();
+	FVector ForwardLine = MainCamera->GetForwardVector();
+	FVector End = ((ForwardLine * 185.0f) + StartLine);
+	FCollisionQueryParams CollisionParams;
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, StartLine, End, ECC_Visibility, CollisionParams))
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), WhooshSound);
+		if (IsValid(OutHit.GetActor()))
+		{
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Yeouch!"));
+			FRotator rott = OutHit.Normal.Rotation()+ FRotator(90.0f,0.f,0.f);
+			ADecalActor* hitDecalActor = GetWorld()->SpawnActor<ADecalActor>(OutHit.ImpactPoint, rott);
+			if (hitDecalActor)
+			{
+				hitDecalActor->SetDecalMaterial(KnifeDecal);
+				hitDecalActor->SetLifeSpan(2.0f);
+				hitDecalActor->SetActorScale3D(FVector(.05f, .05f, .001f));
+			}
+			UGameplayStatics::PlaySound2D(GetWorld(), ClingSound);
+		}
+	}
+}
 void AC_PlayerCharacter::Read(FText TextToRead)
 {
 	Cast<AC_GameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CacheText = TextToRead;
@@ -388,6 +412,8 @@ void AC_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Pause);
 		EnhancedInputComponent->BindAction(DiscardAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Discard);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::OpenInventory);
+		EnhancedInputComponent->BindAction(KnifeAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Knife);
+
 	}
 
 }

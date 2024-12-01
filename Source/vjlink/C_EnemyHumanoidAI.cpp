@@ -12,7 +12,23 @@ AC_EnemyHumanoidAI::AC_EnemyHumanoidAI()
 {
 	BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
 	BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
-	SetupPerceptionSystem();
+	SightCfg = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
+	SetupStimuliSource();
+	if (SightCfg)
+	{
+		SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Componenet")));
+		SightCfg->SightRadius = 6000.0f;
+		SightCfg->LoseSightRadius = SightCfg->SightRadius + 500.0f;
+		SightCfg->PeripheralVisionAngleDegrees = 90.f;
+		SightCfg->SetMaxAge(5.f);
+		SightCfg->AutoSuccessRangeFromLastSeenLocation = 6500.0f;
+		SightCfg->DetectionByAffiliation.bDetectEnemies = true;
+		SightCfg->DetectionByAffiliation.bDetectNeutrals = true;
+
+		GetPerceptionComponent()->SetDominantSense(*SightCfg->GetSenseImplementation());
+		GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AC_EnemyHumanoidAI::OnTargetSniffed);
+		GetPerceptionComponent()->ConfigureSense(*SightCfg);
+	}
 }
 
 void AC_EnemyHumanoidAI::BeginPlay()
@@ -45,26 +61,7 @@ void AC_EnemyHumanoidAI::SetupStimuliSource()
 	}
 }
 
-void AC_EnemyHumanoidAI::SetupPerceptionSystem()
-{
-	SightCfg = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
-	if(SightCfg)
-	{
-		SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Componenet")));
-		SightCfg->SightRadius = MaxSightRange;
-		SightCfg->LoseSightRadius = SightCfg->SightRadius + MaxOffsetLostSight;
-		SightCfg->PeripheralVisionAngleDegrees = MaxPerepherialSightAngle;
-		SightCfg->SetMaxAge(5.f);
-		SightCfg->AutoSuccessRangeFromLastSeenLocation = MaxSightRange + MaxOffsetLostSight;
-		SightCfg->DetectionByAffiliation.bDetectEnemies = true;
-		SightCfg->DetectionByAffiliation.bDetectNeutrals = true;
 
-		GetPerceptionComponent()->SetDominantSense(*SightCfg->GetSenseImplementation());
-		GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AC_EnemyHumanoidAI::OnTargetSniffed);
-		GetPerceptionComponent()->ConfigureSense(*SightCfg);
-	}
-
-}
 
 void AC_EnemyHumanoidAI::OnTargetSniffed(AActor* SniffedActor, FAIStimulus const Stimulus)
 {

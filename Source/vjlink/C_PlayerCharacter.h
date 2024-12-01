@@ -17,7 +17,9 @@
 #include "EnhancedInputSubsystems.h"
 
 #include "Camera/CameraComponent.h"
+#include <Engine/DecalActor.h>
 #include "C_PlayerCharacter.generated.h"
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDead);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRead);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWidgetInitCompleted);
@@ -52,6 +54,10 @@ public:
 	UAudioComponent* ChatterboxComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
 	USoundBase* FootstepsCue;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	USoundBase* WhooshSound;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	USoundBase* ClingSound;
 	UPROPERTY(BlueprintAssignable, Category = "Custom Events")
 	FOnDead OnDeadEvent;
 	UPROPERTY(BlueprintAssignable, Category = "Custom Events")
@@ -91,6 +97,10 @@ public:
 	UInputAction* LookAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* DiscardAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* KnifeAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weaponry, meta = (AllowPrivateAccess = "true"))
+	UMaterial* KnifeDecal;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float Health;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -103,6 +113,8 @@ public:
 	void OnEndOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION(BlueprintCallable)
 	void OpenInventory();
+	UFUNCTION(BlueprintCallable)
+	void Knife();
 	UFUNCTION(BlueprintCallable)
 	void Read(FText TextToRead);
 

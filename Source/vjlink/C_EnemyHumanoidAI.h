@@ -32,15 +32,11 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBlackboardComponent> BlackboardComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	float MaxSightRange = 500.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	float MaxPerepherialSightAngle = 90.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	float MaxOffsetLostSight = 25.0f;
 	UAISenseConfig_Sight* SightCfg;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	UAIPerceptionStimuliSourceComponent* StimulusSource;
 	void SetupStimuliSource();
-	void SetupPerceptionSystem();
+
 	UFUNCTION()
 	void OnTargetSniffed(AActor* SniffedActor, FAIStimulus const Stimulus);
 
