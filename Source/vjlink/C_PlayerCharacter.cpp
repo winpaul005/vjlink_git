@@ -272,12 +272,13 @@ void AC_PlayerCharacter::Knife()
 	FVector ForwardLine = MainCamera->GetForwardVector();
 	FVector End = ((ForwardLine * 185.0f) + StartLine);
 	FCollisionQueryParams CollisionParams;
+	UGameplayStatics::PlaySound2D(GetWorld(), WhooshSound);
 	if (GetWorld()->LineTraceSingleByChannel(OutHit, StartLine, End, ECC_Visibility, CollisionParams))
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), WhooshSound);
+		
 		if (IsValid(OutHit.GetActor()))
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Yeouch!"));
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, OutHit.GetActor()->GetActorLabel());
 			FRotator rott = OutHit.Normal.Rotation()+ FRotator(90.0f,0.f,0.f);
 			ADecalActor* hitDecalActor = GetWorld()->SpawnActor<ADecalActor>(OutHit.ImpactPoint, rott);
 			if (hitDecalActor)
