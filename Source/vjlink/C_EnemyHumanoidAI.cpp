@@ -34,6 +34,14 @@ AC_EnemyHumanoidAI::AC_EnemyHumanoidAI()
 void AC_EnemyHumanoidAI::BeginPlay()
 {
 	Super::BeginPlay();
+	if (bIsSniper)
+	{
+		BehaviorTree = BehaviorTreeStatic;
+	}
+	else
+	{
+		BehaviorTree = BehaviorTreeGeneric;
+	}
 	if (IsValid(BehaviorTree.Get()))
 	{
 		RunBehaviorTree(BehaviorTree.Get());
