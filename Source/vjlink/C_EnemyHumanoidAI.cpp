@@ -24,7 +24,10 @@ AC_EnemyHumanoidAI::AC_EnemyHumanoidAI()
 		SightCfg->AutoSuccessRangeFromLastSeenLocation = 6500.0f;
 		SightCfg->DetectionByAffiliation.bDetectEnemies = true;
 		SightCfg->DetectionByAffiliation.bDetectNeutrals = true;
+		if (bIsSniper)
+		{
 
+		}
 		GetPerceptionComponent()->SetDominantSense(*SightCfg->GetSenseImplementation());
 		GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AC_EnemyHumanoidAI::OnTargetSniffed);
 		GetPerceptionComponent()->ConfigureSense(*SightCfg);
