@@ -278,6 +278,10 @@ void AC_PlayerCharacter::Knife()
 		
 		if (IsValid(OutHit.GetActor()))
 		{
+			if (OutHit.GetActor()->IsA(AC_UseableItem::StaticClass()))
+			{
+				Cast<AC_UseableItem>(OutHit.GetActor())->HitMe();
+			}
 			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, OutHit.GetActor()->GetActorLabel());
 			FRotator rott = OutHit.Normal.Rotation()+ FRotator(90.0f,0.f,0.f);
 			ADecalActor* hitDecalActor = GetWorld()->SpawnActor<ADecalActor>(OutHit.ImpactPoint, rott);
@@ -346,8 +350,15 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 	{
 		if (IsValid(OutHit.GetActor()) && OutHit.GetActor()->IsA(AC_UseableItem::StaticClass()))
 		{
-			bIsWatchingAtUseable = true;
-			WatchableItem = OutHit.GetActor();
+			if (Cast<AC_UseableItem>(OutHit.GetActor())->bIsBreakeable == false)
+			{
+				bIsWatchingAtUseable = true;
+				WatchableItem = OutHit.GetActor();
+			}
+			else {
+				bIsWatchingAtUseable = false;
+				WatchableItem = nullptr;
+			}
 		}
 		else 
 		{

@@ -17,8 +17,14 @@ public:
 	AC_UseableItem();
 	UFUNCTION(BlueprintCallable, Category = "UseableItem")
 		void UseItem(int CacheItemID);
+	UFUNCTION(BlueprintCallable, Category = "UseableItem")
+	void HitMe();
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Custom Events")
 		FString EventId;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Properties")
+	bool bIsBreakeable;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Properties")
+	int HitsLeft;
 	UPROPERTY(BlueprintAssignable, Category = "Custom Events")
 	FOnUseItem OnUseItem;
 protected:
