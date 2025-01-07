@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Sound/SoundBase.h"
-#include "Components/AudioComponent.h"
 #include "C_UseableItem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUseItem, int,CacheInventoryItemId);
@@ -27,8 +25,6 @@ public:
 	bool bIsBreakeable;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Properties")
 	int HitsLeft;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
-	USoundBase* DestroySound;
 	UPROPERTY(BlueprintAssignable, Category = "Custom Events")
 	FOnUseItem OnUseItem;
 protected:

@@ -1,7 +1,8 @@
 #include "C_UseableItem.h"
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include <Kismet/GameplayStatics.h>
+
+#include "C_UseableItem.h"
 
 // Sets default values
 AC_UseableItem::AC_UseableItem()
@@ -30,7 +31,6 @@ void AC_UseableItem::HitMe()
 			HitsLeft -= 1;
 		}
 		else {
-			UGameplayStatics::PlaySound2D(GetWorld(), DestroySound);
 			Destroy();
 		}
 	}
