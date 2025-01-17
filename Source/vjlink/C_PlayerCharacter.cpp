@@ -59,7 +59,8 @@ AC_PlayerCharacter::AC_PlayerCharacter()
 	bOutOfOrder = false;
 	bIsReading = false;
 	TotalPagesLeft = 0;
-
+	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
+	bIsHolding = false;
 
 	
 }
@@ -251,6 +252,33 @@ void AC_PlayerCharacter::Pause()
 	}
 }
 
+void AC_PlayerCharacter::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Triggered!"));
+	if(bIsHolding)
+	{
+		PhysicsHandle->ReleaseComponent();
+		bIsHolding = false;
+	}
+	else
+	{
+		FVector StartLine = MainCamera->GetComponentLocation();
+		FVector ForwardLine = MainCamera->GetForwardVector();
+		FVector End = ((ForwardLine * 185.0f) + StartLine);
+		FCollisionQueryParams CollisionParams;
+		if (GetWorld()->LineTraceSingleByChannel(OutHit, StartLine, End, ECC_Visibility, CollisionParams))
+		{
+			if (OutHit.bBlockingHit)
+			{
+				PhysicsHandle->SetTargetLocation(OutHit.ImpactPoint);
+				PhysicsHandle->GrabComponentAtLocation(OutHit.GetComponent(), NAME_None, OutHit.GetComponent()->GetComponentLocation());
+				UE_LOG(LogTemp, Warning, TEXT("Grabbed!"));
+				bIsHolding = true;
+			}
+		}
+	}
+}
+
 void AC_PlayerCharacter::OpenInventory()
 {	if(bOutOfOrder !=true)
 	{
@@ -425,6 +453,7 @@ void AC_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(DiscardAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Discard);
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::OpenInventory);
 		EnhancedInputComponent->BindAction(KnifeAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Knife);
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Grab);
 
 	}
 

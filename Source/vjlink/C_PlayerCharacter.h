@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 #include "Sound/SoundBase.h"
 #include "Components/AudioComponent.h"
@@ -99,6 +100,8 @@ public:
 	UInputAction* DiscardAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* KnifeAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* GrabAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weaponry, meta = (AllowPrivateAccess = "true"))
 	UMaterial* KnifeDecal;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -159,6 +162,9 @@ protected:
 	void Discard();
 	void Quit();
 	void Pause();
+	void Grab();
+	class UPhysicsHandleComponent* PhysicsHandle;
+	bool bIsHolding;
 
 public:
 	// Called every frame
