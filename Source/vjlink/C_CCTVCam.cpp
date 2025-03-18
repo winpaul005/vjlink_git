@@ -10,7 +10,7 @@ AC_CCTVCam::AC_CCTVCam()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Camera = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("CCTV Camera"));
-
+	
 
 }
 
