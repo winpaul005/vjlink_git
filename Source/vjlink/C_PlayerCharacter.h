@@ -50,7 +50,8 @@ class VJLINK_API AC_PlayerCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AC_PlayerCharacter();
-
+	UPROPERTY(EditDefaultsOnly)
+	UPhysicsHandleComponent* PhysicsHandle;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
 	UAudioComponent* ChatterboxComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
@@ -163,7 +164,6 @@ protected:
 	void Quit();
 	void Pause();
 	void Grab();
-	class UPhysicsHandleComponent* PhysicsHandle;
 	bool bIsHolding;
 
 public:
