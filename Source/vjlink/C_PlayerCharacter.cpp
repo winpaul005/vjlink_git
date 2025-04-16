@@ -265,15 +265,21 @@ void AC_PlayerCharacter::Grab()
 		FVector StartLine = MainCamera->GetComponentLocation();
 		FVector ForwardLine = MainCamera->GetForwardVector();
 		FVector End = ((ForwardLine * 185.0f) + StartLine);
+		FHitResult outRes;
 		FCollisionQueryParams CollisionParams;
-		if (GetWorld()->LineTraceSingleByChannel(OutHit, StartLine, End, ECC_Visibility, CollisionParams))
+		FCollisionObjectQueryParams ObjectCollisionParams;
+		ObjectCollisionParams.AddObjectTypesToQuery(ECollisionChannel::ECC_PhysicsBody);
+		if (GetWorld()->LineTraceSingleByObjectType(outRes,StartLine,End, ObjectCollisionParams,CollisionParams))
 		{
 			if (OutHit.bBlockingHit)
 			{
+				
 				PhysicsHandle->SetTargetLocation(OutHit.ImpactPoint);
-				PhysicsHandle->GrabComponentAtLocation(OutHit.GetComponent(), NAME_None, OutHit.GetComponent()->GetComponentLocation());
+				PhysicsHandle->GrabComponentAtLocation(OutHit.GetComponent(), NAME_None, OutHit.ImpactPoint);
+				PhysicsHandle->GetGrabbedComponent()->SetSimulatePhysics(true);
 				UE_LOG(LogTemp, Warning, TEXT("Grabbed!"));
 				bIsHolding = true;
+
 			}
 		}
 	}
