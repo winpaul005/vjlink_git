@@ -189,7 +189,7 @@ void AC_PlayerCharacter::Use()
 
 	void AC_PlayerCharacter::Flashlight()
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Charge left: %s"), (ChargeFlashlight * 100.0f));
+		//wUE_LOG(LogTemp, Warning, TEXT("Charge left: %s"), (ChargeFlashlight * 100.0f));
 
 		if(bOutOfOrder != true)
 		{
