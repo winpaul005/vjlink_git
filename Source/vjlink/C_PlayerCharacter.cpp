@@ -60,6 +60,11 @@ AC_PlayerCharacter::AC_PlayerCharacter()
 	bIsReading = false;
 	TotalPagesLeft = 0;
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
+	SpringArmC = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArmC->SetupAttachment(MainCamera);
+	SpringArmC->TargetArmLength = 185.0f;
+	SpringArmC->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	SpringArmC->SetRelativeRotation(MainCamera->GetRelativeRotation());
 	bIsHolding = false;
 
 	
@@ -256,6 +261,13 @@ void AC_PlayerCharacter::Pause()
 
 void AC_PlayerCharacter::Grab()
 {
+	FVector StartLine = MainCamera->GetComponentLocation();
+	FVector ForwardLine = MainCamera->GetForwardVector();
+	FVector End = ((ForwardLine * 185.0f) + StartLine);
+	FHitResult outRes;
+	FCollisionQueryParams CollisionParams;
+	FCollisionObjectQueryParams ObjectCollisionParams;
+	ObjectCollisionParams.AddObjectTypesToQuery(ECollisionChannel::ECC_PhysicsBody);
 	UE_LOG(LogTemp, Warning, TEXT("Triggered!"));
 	if(bIsHolding)
 	{
@@ -264,13 +276,7 @@ void AC_PlayerCharacter::Grab()
 	}
 	else
 	{
-		FVector StartLine = MainCamera->GetComponentLocation();
-		FVector ForwardLine = MainCamera->GetForwardVector();
-		FVector End = ((ForwardLine * 185.0f) + StartLine);
-		FHitResult outRes;
-		FCollisionQueryParams CollisionParams;
-		FCollisionObjectQueryParams ObjectCollisionParams;
-		ObjectCollisionParams.AddObjectTypesToQuery(ECollisionChannel::ECC_PhysicsBody);
+		
 		if (GetWorld()->LineTraceSingleByObjectType(outRes,StartLine,End, ObjectCollisionParams,CollisionParams))
 		{
 			if (OutHit.bBlockingHit)
@@ -279,8 +285,13 @@ void AC_PlayerCharacter::Grab()
 				PhysicsHandle->SetTargetLocation(OutHit.ImpactPoint);
 				PhysicsHandle->GrabComponentAtLocation(OutHit.GetComponent(), NAME_None, OutHit.ImpactPoint);
 				PhysicsHandle->GetGrabbedComponent()->SetSimulatePhysics(true);
-				UE_LOG(LogTemp, Warning, TEXT("Grabbed!"));
-				bIsHolding = true;
+				//500 kg = Cannot move, just tug
+				if (!(PhysicsHandle->GetGrabbedComponent()->GetMass() >= 500.0f))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Grabbed!"));
+					bIsHolding = true;
+				}
+
 
 			}
 		}
@@ -406,6 +417,11 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 	else {
 		bIsWatchingAtUseable = false;
 		WatchableItem = nullptr;
+	}
+
+	if (bIsHolding)
+	{
+		PhysicsHandle->SetTargetLocation(MainCamera->GetComponentLocation() + MainCamera->GetForwardVector() * 70.0f);
 	}
 	//Check what actors are we looking at
 	FVector EndLook = ((ForwardLine * 844.0f) + StartLine);

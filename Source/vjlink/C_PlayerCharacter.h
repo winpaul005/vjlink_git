@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 #include "Sound/SoundBase.h"
 #include "Components/AudioComponent.h"
@@ -52,6 +53,8 @@ public:
 	AC_PlayerCharacter();
 	UPROPERTY(EditDefaultsOnly)
 	UPhysicsHandleComponent* PhysicsHandle;
+	UPROPERTY(EditDefaultsOnly)
+	USpringArmComponent* SpringArmC;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
 	UAudioComponent* ChatterboxComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
