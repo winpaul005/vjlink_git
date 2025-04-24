@@ -284,7 +284,6 @@ void AC_PlayerCharacter::Grab()
 				
 				PhysicsHandle->SetTargetLocation(OutHit.ImpactPoint);
 				PhysicsHandle->GrabComponentAtLocation(OutHit.GetComponent(), NAME_None, OutHit.ImpactPoint);
-				PhysicsHandle->GetGrabbedComponent()->SetSimulatePhysics(true);
 				//500 kg = Cannot move, just tug
 				if (!(PhysicsHandle->GetGrabbedComponent()->GetMass() >= 500.0f))
 				{
@@ -421,7 +420,7 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 
 	if (bIsHolding)
 	{
-		PhysicsHandle->SetTargetLocation(MainCamera->GetComponentLocation() + MainCamera->GetForwardVector() * 70.0f);
+		PhysicsHandle->SetTargetLocation(MainCamera->GetComponentLocation() + MainCamera->GetForwardVector() * 150.0f);
 	}
 	//Check what actors are we looking at
 	FVector EndLook = ((ForwardLine * 844.0f) + StartLine);
