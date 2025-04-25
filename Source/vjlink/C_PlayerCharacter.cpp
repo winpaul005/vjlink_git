@@ -60,13 +60,9 @@ AC_PlayerCharacter::AC_PlayerCharacter()
 	bIsReading = false;
 	TotalPagesLeft = 0;
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
-	SpringArmC = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArmC->SetupAttachment(MainCamera);
-	SpringArmC->TargetArmLength = 185.0f;
-	SpringArmC->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	SpringArmC->SetRelativeRotation(MainCamera->GetRelativeRotation());
-	bIsHolding = false;
 
+	bIsHolding = false;
+	curDist = 185.0f;
 	
 }
 
@@ -273,6 +269,7 @@ void AC_PlayerCharacter::Grab()
 	{
 		PhysicsHandle->ReleaseComponent();
 		bIsHolding = false;
+		curDist = 185.0f;
 	}
 	else
 	{
@@ -284,7 +281,7 @@ void AC_PlayerCharacter::Grab()
 				
 				PhysicsHandle->SetTargetLocation(OutHit.ImpactPoint);
 				PhysicsHandle->GrabComponentAtLocation(OutHit.GetComponent(), NAME_None, OutHit.ImpactPoint);
-				SpringArmC->TargetArmLength = OutHit.Distance;
+				curDist = OutHit.Distance;
 				//500 kg = Cannot move, just tug
 				if (!(PhysicsHandle->GetGrabbedComponent()->GetMass() >= 500.0f))
 				{
@@ -295,6 +292,7 @@ void AC_PlayerCharacter::Grab()
 				{
 					PhysicsHandle->ReleaseComponent();
 					bIsHolding = false;
+					curDist = 185.0f;
 				}
 
 
@@ -426,7 +424,7 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 
 	if (bIsHolding)
 	{
-		PhysicsHandle->SetTargetLocation(SpringArmC->GetComponentLocation() + SpringArmC->GetForwardVector() * SpringArmC->TargetArmLength);
+		PhysicsHandle->SetTargetLocation(MainCamera->GetComponentLocation() + MainCamera->GetForwardVector() * curDist);
 	}
 	//Check what actors are we looking at
 	FVector EndLook = ((ForwardLine * 844.0f) + StartLine);

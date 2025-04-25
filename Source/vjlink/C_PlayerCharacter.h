@@ -55,6 +55,7 @@ public:
 	UPhysicsHandleComponent* PhysicsHandle;
 	UPROPERTY(EditDefaultsOnly)
 	USpringArmComponent* SpringArmC;
+	float curDist;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
 	UAudioComponent* ChatterboxComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
