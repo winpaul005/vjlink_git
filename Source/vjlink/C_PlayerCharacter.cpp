@@ -284,11 +284,17 @@ void AC_PlayerCharacter::Grab()
 				
 				PhysicsHandle->SetTargetLocation(OutHit.ImpactPoint);
 				PhysicsHandle->GrabComponentAtLocation(OutHit.GetComponent(), NAME_None, OutHit.ImpactPoint);
+				SpringArmC->TargetArmLength = OutHit.Distance;
 				//500 kg = Cannot move, just tug
 				if (!(PhysicsHandle->GetGrabbedComponent()->GetMass() >= 500.0f))
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Grabbed!"));
 					bIsHolding = true;
+				}
+				else 
+				{
+					PhysicsHandle->ReleaseComponent();
+					bIsHolding = false;
 				}
 
 
@@ -420,7 +426,7 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 
 	if (bIsHolding)
 	{
-		PhysicsHandle->SetTargetLocation(MainCamera->GetComponentLocation() + MainCamera->GetForwardVector() * 150.0f);
+		PhysicsHandle->SetTargetLocation(SpringArmC->GetComponentLocation() + SpringArmC->GetForwardVector() * SpringArmC->TargetArmLength);
 	}
 	//Check what actors are we looking at
 	FVector EndLook = ((ForwardLine * 844.0f) + StartLine);
