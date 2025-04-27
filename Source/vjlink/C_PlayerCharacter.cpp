@@ -60,7 +60,7 @@ AC_PlayerCharacter::AC_PlayerCharacter()
 	bIsReading = false;
 	TotalPagesLeft = 0;
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
-
+	holdingWeight = 0.0f;
 	bIsHolding = false;
 	curDist = 185.0f;
 	
@@ -152,8 +152,9 @@ void AC_PlayerCharacter::Move(const FInputActionValue& Value)
 			const FVector YDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 			//NOTE: For some reason XDirection and YDirection are f***d up, doing what they're supposed to do vice versa.
 			//Keep that in mind.
-			AddMovementInput(XDirection, MovementVector.Y * 0.6f);
-			AddMovementInput(YDirection, MovementVector.X*0.6f);
+			//NOTE: Formula for movement: (Y vector * Speed *(1 - (mass / 8)))
+			AddMovementInput(XDirection, (MovementVector.Y * 0.6f) * (1 - (holdingWeight/500)));
+			AddMovementInput(YDirection, (MovementVector.X * 0.6f) * (1 - (holdingWeight /500)));
 
 		}
 	}
@@ -216,8 +217,8 @@ void AC_PlayerCharacter::Look(const FInputActionValue& Value)
 
 	if (Controller != nullptr && bCanLook==true)
 	{
-		AddControllerPitchInput(LookAxisVector.X);
-		AddControllerYawInput(LookAxisVector.Y);
+		AddControllerPitchInput((LookAxisVector.X) * (1 - (holdingWeight / 500)));
+		AddControllerYawInput((LookAxisVector.Y) * (1 - (holdingWeight / 500)));
 	}	
 }
 
@@ -269,6 +270,7 @@ void AC_PlayerCharacter::Grab()
 	{
 		PhysicsHandle->ReleaseComponent();
 		bIsHolding = false;
+		holdingWeight = 0.0f;
 		curDist = 185.0f;
 	}
 	else
@@ -286,12 +288,14 @@ void AC_PlayerCharacter::Grab()
 				if (!(PhysicsHandle->GetGrabbedComponent()->GetMass() >= 500.0f))
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Grabbed!"));
+					holdingWeight = PhysicsHandle->GetGrabbedComponent()->GetMass();
 					bIsHolding = true;
 				}
 				else 
 				{
 					PhysicsHandle->ReleaseComponent();
 					bIsHolding = false;
+					holdingWeight = 0.0f;
 					curDist = 185.0f;
 				}
 

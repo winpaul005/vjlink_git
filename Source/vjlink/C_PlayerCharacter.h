@@ -56,6 +56,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	USpringArmComponent* SpringArmC;
 	float curDist;
+	float holdingWeight;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
 	UAudioComponent* ChatterboxComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
