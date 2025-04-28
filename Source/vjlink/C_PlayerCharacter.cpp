@@ -62,7 +62,9 @@ AC_PlayerCharacter::AC_PlayerCharacter()
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 	holdingWeight = 0.0f;
 	bIsHolding = false;
+	crouchParams.AddObjectTypesToQuery(ECC_WorldStatic);
 	curDist = 185.0f;
+
 	
 }
 
@@ -217,8 +219,8 @@ void AC_PlayerCharacter::Look(const FInputActionValue& Value)
 
 	if (Controller != nullptr && bCanLook==true)
 	{
-		AddControllerPitchInput((LookAxisVector.X) * (1 - (holdingWeight / 500)));
 		AddControllerYawInput((LookAxisVector.Y) * (1 - (holdingWeight / 500)));
+		AddControllerPitchInput((LookAxisVector.X) * (powf(1 - (holdingWeight / 500),2)));
 	}	
 }
 
@@ -261,7 +263,7 @@ void AC_PlayerCharacter::Grab()
 	FVector StartLine = MainCamera->GetComponentLocation();
 	FVector ForwardLine = MainCamera->GetForwardVector();
 	FVector End = ((ForwardLine * 185.0f) + StartLine);
-	FHitResult outRes;
+	FHitResult outH;
 	FCollisionQueryParams CollisionParams;
 	FCollisionObjectQueryParams ObjectCollisionParams;
 	ObjectCollisionParams.AddObjectTypesToQuery(ECollisionChannel::ECC_PhysicsBody);
@@ -276,14 +278,14 @@ void AC_PlayerCharacter::Grab()
 	else
 	{
 		
-		if (GetWorld()->LineTraceSingleByObjectType(outRes,StartLine,End, ObjectCollisionParams,CollisionParams))
+		if (GetWorld()->LineTraceSingleByObjectType(outH,StartLine,End, ObjectCollisionParams,CollisionParams))
 		{
-			if (OutHit.bBlockingHit)
+			if (outH.bBlockingHit)
 			{
 				
-				PhysicsHandle->SetTargetLocation(OutHit.ImpactPoint);
-				PhysicsHandle->GrabComponentAtLocation(OutHit.GetComponent(), NAME_None, OutHit.ImpactPoint);
-				curDist = OutHit.Distance;
+				PhysicsHandle->SetTargetLocation(outH.ImpactPoint);
+				PhysicsHandle->GrabComponentAtLocation(outH.GetComponent(), NAME_None, outH.ImpactPoint);
+				curDist = outH.Distance;
 				//500 kg = Cannot move, just tug
 				if (!(PhysicsHandle->GetGrabbedComponent()->GetMass() >= 500.0f))
 				{
@@ -302,6 +304,22 @@ void AC_PlayerCharacter::Grab()
 
 			}
 		}
+	}
+}
+
+void AC_PlayerCharacter::Crouch()
+{
+	if (!bCrouched)
+	{
+		bCrouched = true;
+	}
+}
+
+void AC_PlayerCharacter::UnCrouch()
+{
+	if (bCrouched)
+	{
+		bCrouched = false;
 	}
 }
 
@@ -465,6 +483,22 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 			bIsFlashlightActive = false;
 		}
 	}
+
+	//Crouch logic
+	if (bCrouched)
+	{
+		
+		GetCapsuleComponent()->SetCapsuleSize(42.0f,FMath::Lerp(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), 50.f,0.5f));
+	}
+	else
+	{
+		GetCapsuleComponent()->SetCapsuleSize(42.0f, FMath::Lerp(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), 85.f, 0.5f));
+		
+		/*if (GetWorld()->LineTraceSingleByObjectType(crouchHit, GetCapsuleComponent()->GetComponentLocation(), GetCapsuleComponent()->GetUpVector() * 4.f, crouchParams, crouchCollisionParams) && !crouchHit.bBlockingHit)
+		{
+			GetCapsuleComponent()->SetCapsuleSize(42.0f, FMath::Lerp(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), 85.f, 0.5f));
+		}*/
+	}
 }
 
 // Called to bind functionality to input
@@ -479,6 +513,9 @@ void AC_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(UseAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Use);
 		EnhancedInputComponent->BindAction(FlashlightAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Flashlight);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AC_PlayerCharacter::Look);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Crouch);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AC_PlayerCharacter::UnCrouch);
+
 		EnhancedInputComponent->BindAction(EscapeAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Quit);
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Pause);
 		EnhancedInputComponent->BindAction(DiscardAction, ETriggerEvent::Started, this, &AC_PlayerCharacter::Discard);

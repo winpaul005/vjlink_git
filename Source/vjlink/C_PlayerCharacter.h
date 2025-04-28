@@ -69,7 +69,6 @@ public:
 	FOnDead OnDeadEvent;
 	UPROPERTY(BlueprintAssignable, Category = "Custom Events")
 	FOnRead OnReadEvent;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* MainCamera;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
@@ -90,6 +89,8 @@ public:
 	UInputMappingContext* DefaultMappingContext;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* CrouchAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -151,6 +152,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bPaused;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bCrouched;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AActor* LookAtClass;
 	UFUNCTION(BlueprintCallable)
 	void Punch(float Damage);
@@ -169,6 +172,12 @@ protected:
 	void Quit();
 	void Pause();
 	void Grab();
+	void Crouch();
+	void UnCrouch();
+	FHitResult crouchHit;
+	FCollisionObjectQueryParams crouchParams;
+	FCollisionQueryParams crouchCollisionParams;
+
 	bool bIsHolding;
 
 public:
