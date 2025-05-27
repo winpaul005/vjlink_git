@@ -57,6 +57,8 @@ public:
 	USpringArmComponent* SpringArmC;
 	float curDist;
 	float holdingWeight;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Player)
+	bool bIsClimbing;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
 	UAudioComponent* ChatterboxComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")

@@ -84,6 +84,7 @@ void AC_PlayerCharacter::AddCharge(float Charge)
 
 void AC_PlayerCharacter::OnBeginOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
 }
 
 void AC_PlayerCharacter::OnEndOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -143,23 +144,32 @@ void AC_PlayerCharacter::BeginPlay()
 }
 
 void AC_PlayerCharacter::Move(const FInputActionValue& Value)
-{
+{	const FRotator Rotation = Controller->GetControlRotation();
+	FVector2D MovementVector = Value.Get<FVector2D>();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+	const FVector XDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const FVector YDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	const FVector ZDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Z);
 	if (bOutOfOrder != true && bCanLook ==true) {
-		FVector2D MovementVector = Value.Get<FVector2D>();
 		if (Controller != nullptr)
 		{
-			const FRotator Rotation = Controller->GetControlRotation();
-			const FRotator YawRotation(0, Rotation.Yaw, 0);
-			const FVector XDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-			const FVector YDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-			//NOTE: For some reason XDirection and YDirection are f***d up, doing what they're supposed to do vice versa.
-			//Keep that in mind.
-			//NOTE: Formula for movement: (Y vector * Speed *(1 - (mass / 8)))
-			AddMovementInput(XDirection, (MovementVector.Y * 0.6f) * (1 - (holdingWeight/500)));
-			AddMovementInput(YDirection, (MovementVector.X * 0.6f) * (1 - (holdingWeight /500)));
+			if(!bIsClimbing)
+
+			{
+				//NOTE: For some reason XDirection and YDirection are f***d up, doing what they're supposed to do vice versa.
+				//Keep that in mind.
+				//NOTE: Formula for movement: (Y vector * Speed *(1 - (mass / 8)))
+				AddMovementInput(XDirection, (MovementVector.Y * 0.6f) * (1 - (holdingWeight / 500)));
+				AddMovementInput(YDirection, (MovementVector.X * 0.6f) * (1 - (holdingWeight / 500)));
+			}
+			else
+			{
+				AddMovementInput(ZDirection, (MovementVector.Y * 0.6f));
+			}
 
 		}
 	}
+
 }
 
 
