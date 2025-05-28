@@ -13,7 +13,7 @@ AC_FuncLadder::AC_FuncLadder()
 	BorderBox->SetupAttachment(LadderMesh);
 	BorderBox->OnComponentBeginOverlap.AddDynamic(this, &AC_FuncLadder::Overlap);
 	BorderBox->OnComponentEndOverlap.AddDynamic(this, &AC_FuncLadder::EndOverlap);
-
+	bIsFirstTime = true;
 }
 
 void AC_FuncLadder::Overlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -21,6 +21,18 @@ void AC_FuncLadder::Overlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UP
 	GrabbedCharacter = Cast<AC_PlayerCharacter>(OtherActor);
 	if (GrabbedCharacter)
 	{
+		if (!GrabbedCharacter->GetCharacterMovement()->IsFalling())
+		{
+			if (!bIsFirstTime)
+			{
+				GrabbedCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+				GrabbedCharacter->bIsClimbing = false;
+			}
+		}
+		else
+		{
+			bIsFirstTime = false;
+		}
 		GrabbedCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
 		GrabbedCharacter->bIsClimbing = true;
 	}
@@ -32,6 +44,10 @@ void AC_FuncLadder::EndOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor,
 	GrabbedCharacter = Cast<AC_PlayerCharacter>(OtherActor);
 	if (GrabbedCharacter)
 	{
+		if (!bIsFirstTime)
+		{
+			bIsFirstTime = true;
+		}
 		GrabbedCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 		GrabbedCharacter->bIsClimbing = false;
 	}

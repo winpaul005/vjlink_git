@@ -497,19 +497,24 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 	}
 
 	//Crouch logic
-	DrawDebugLine(GetWorld(), GetCapsuleComponent()->GetComponentLocation(), MainCamera->GetComponentLocation() + GetCapsuleComponent()->GetUpVector() * implodeHeight, FColor::Green, false, 1, 0, 1);
-	bool HasHitAnything = GetWorld()->LineTraceSingleByObjectType(crouchHit, GetCapsuleComponent()->GetComponentLocation(), MainCamera->GetComponentLocation() + GetCapsuleComponent()->GetUpVector() * implodeHeight, crouchParams, crouchCollisionParams) && crouchHit.bBlockingHit;
-	if (HasHitAnything || bCrouched)
+	DrawDebugLine(GetWorld(), MainCamera->GetComponentLocation(), MainCamera->GetRightVector() * bufferHeight, FColor::Green, false, 1, 0, 1);
+	if (bCrouched)
 	{
 		
 		GetCapsuleComponent()->SetCapsuleSize(42.0f,FMath::Lerp(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), implodeHeight,0.5f));
-		bCrouched = true;
 	}
 	else
 	{
-		GetCapsuleComponent()->SetCapsuleSize(42.0f, FMath::Lerp(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), bufferHeight, 0.5f));
-		bCrouched = false;
+		
+		if (GetWorld()->LineTraceSingleByObjectType(crouchHit, MainCamera->GetComponentLocation(), MainCamera->GetRightVector() * implodeHeight, crouchParams, crouchCollisionParams) && crouchHit.bBlockingHit)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Obstructed! Cannot get up!"));
+			GetCapsuleComponent()->SetCapsuleSize(42.0f, FMath::Lerp(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), implodeHeight, 0.5f));
+		}
+		else {
+			GetCapsuleComponent()->SetCapsuleSize(42.0f, FMath::Lerp(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), bufferHeight, 0.5f));
 
+		}
 	}
 }
 

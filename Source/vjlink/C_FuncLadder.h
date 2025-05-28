@@ -20,6 +20,7 @@ public:
 	class UStaticMeshComponent* LadderMesh;
 	UPROPERTY(EditAnywhere, Category = "Mesh")
 	class UBoxComponent* BorderBox;
+	bool bIsFirstTime;
 	AC_PlayerCharacter* GrabbedCharacter;
 	UFUNCTION()
 	void Overlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

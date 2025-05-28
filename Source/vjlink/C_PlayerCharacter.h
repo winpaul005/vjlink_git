@@ -163,6 +163,9 @@ public:
 	void Heal(float Health_add);
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FHitResult OutHit;
+	float bufferHeight;
+	UPROPERTY(EditAnywhere, Category = "Player")
+	float implodeHeight;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
