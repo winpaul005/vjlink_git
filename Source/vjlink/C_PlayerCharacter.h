@@ -81,7 +81,7 @@ public:
 	UC_InventoryComponent* InventoryComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
 	AActor* WatchableItem;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Inventory)
 	bool bCanLook;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Inventory, meta = (AllowPrivateAccess = "true"))
 	int InventoryWidth = 4;
@@ -166,6 +166,7 @@ public:
 	float bufferHeight;
 	UPROPERTY(EditAnywhere, Category = "Player")
 	float implodeHeight;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

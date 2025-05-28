@@ -230,6 +230,7 @@ void AC_PlayerCharacter::Look(const FInputActionValue& Value)
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr && bCanLook==true)
+	if (Controller != nullptr && bCanLook==true)
 	{
 		AddControllerYawInput((LookAxisVector.Y) * (1 - (holdingWeight / 500)));
 		AddControllerPitchInput((LookAxisVector.X) * (powf(1 - (holdingWeight / 500),2)));
@@ -501,14 +502,16 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 	bool HasHitAnything = GetWorld()->LineTraceSingleByObjectType(crouchHit, GetCapsuleComponent()->GetComponentLocation(), MainCamera->GetComponentLocation() + GetCapsuleComponent()->GetUpVector() * implodeHeight, crouchParams, crouchCollisionParams) && crouchHit.bBlockingHit;
 	if (HasHitAnything || bCrouched)
 	{
-		
+		if (bCrouched)
+		{
+			bIsClimbing = false;
+
+		}
 		GetCapsuleComponent()->SetCapsuleSize(42.0f,FMath::Lerp(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), implodeHeight,0.5f));
-		bCrouched = true;
 	}
 	else
 	{
 		GetCapsuleComponent()->SetCapsuleSize(42.0f, FMath::Lerp(GetCapsuleComponent()->GetScaledCapsuleHalfHeight(), bufferHeight, 0.5f));
-		bCrouched = false;
 
 	}
 }
