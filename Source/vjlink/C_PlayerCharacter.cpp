@@ -439,21 +439,26 @@ void AC_PlayerCharacter::Tick(float DeltaTime)
 			{
 				bIsWatchingAtUseable = true;
 				WatchableItem = OutHit.GetActor();
+				//Cast<AC_UseableItem>(WatchableItem)->bIsLookedAt = true;
+
 			}
 			else {
 				bIsWatchingAtUseable = false;
+				//Cast<AC_UseableItem>(WatchableItem)->bIsLookedAt = false;
 				WatchableItem = nullptr;
 			}
 		}
 		else 
 		{
 			bIsWatchingAtUseable = false;
+			//Cast<AC_UseableItem>(WatchableItem)->bIsLookedAt = false;
 			WatchableItem = nullptr;
 		}
 
 	}
 	else {
 		bIsWatchingAtUseable = false;
+		//Cast<AC_UseableItem>(WatchableItem)->bIsLookedAt = false;
 		WatchableItem = nullptr;
 	}
 

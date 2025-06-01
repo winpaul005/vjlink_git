@@ -8,6 +8,13 @@ AC_UseableItem::AC_UseableItem()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	//static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("Material'/Game/Dump/MT_PickGlow.MT_PickGlow'"));
+
+	//if (Material.Object != NULL)
+	//{
+		//GlowMat = (UMaterial*)Material.Object;
+	//}
+	//bIsLookedAt = false;
 	HitsLeft = 5;
 
 }
@@ -40,6 +47,7 @@ void AC_UseableItem::HitMe()
 void AC_UseableItem::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 }
 
@@ -47,6 +55,14 @@ void AC_UseableItem::BeginPlay()
 void AC_UseableItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	/*if (bIsLookedAt)
+	{
+		this->FindComponentByClass<UStaticMeshComponent>()->SetOverlayMaterial(GlowMat);
+	}
+	else
+	{
+		this->FindComponentByClass<UStaticMeshComponent>()->SetOverlayMaterial(NULL);
 
+	}*/
 }
 

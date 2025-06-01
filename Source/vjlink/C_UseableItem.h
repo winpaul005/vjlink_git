@@ -26,11 +26,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Properties")
 	bool bIsBreakeable;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Properties")
+	UMaterial* GlowMat;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Properties")
 	int HitsLeft;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
 	USoundBase* DestroySound;
 	UPROPERTY(BlueprintAssignable, Category = "Custom Events")
 	FOnUseItem OnUseItem;
+	//bool bIsLookedAt;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
